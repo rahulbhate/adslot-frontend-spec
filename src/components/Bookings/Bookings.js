@@ -45,7 +45,19 @@ const  Bookings = (props) => {
       //    }, {});
       //    //console.log("group", group);
       // }
-      
+      function groupData(products, sellers){
+        /* The method presented here modifies the articles 
+        array in place by adding a new key-value-pair for brand. */
+        var newArray = products.forEach(function(product) {
+          var result = sellers.filter(function(seller) {
+              return seller.id === product.sellerId;
+          });
+          delete products.sellerId;
+          product.sellerName = (result[0] !== undefined) ? result[0].name : null;
+          return result;
+      });
+      console.log(newArray);
+      }
 
       var filteredProducts = search ? products.filter(
         (item) => {
@@ -60,7 +72,7 @@ const  Bookings = (props) => {
       }
 
      // groupBySeller(products);
-
+     groupData(products,sellers);
     return(
         <div>
         <Label htmlFor="test" label="Search Products By Name:"/>
