@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import BookingDetails from '../BookingDetails';
 import TextInput from '../TextInput';
 import Label from '../Label';
-import  _  from 'underscore';
 const  Bookings = (props) => {
     const [bookings, setBookings] = useState([{}]);
     const [products, setProducts] = useState([{}]);
