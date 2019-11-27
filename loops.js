@@ -197,14 +197,116 @@ var prod = products.map(function(product) {
   var bookingData = bookings.filter(function(booking){
     return booking.productId === product.id;
   });  
-  return {...product, sellerName:(sellerName[0] !== undefined) ? sellerName[0].name : null, productName:(bookingData[0] !== undefined) ? bookingData[0].name : null, bookingData};
-});
-
-var groupBySellerId = prod.reduce((r, a, index) => {
-  // r[a.sellerName] = [...r[a.sellerName] || [], a];
+  return {...product,  sellerName:(sellerName[0] !== undefined) ? sellerName[0].name : null, bookingData};
+}).reduce((r, a, index) => {
   r[a.sellerName] = r[a.sellerName] || [];
   r[a.sellerName].push(a);
   return r;
-  //return r;
  }, {});
 
+var groupBySellerId = prod.reduce((r, a, index) => {
+  r[a.sellerName] = r[a.sellerName] || [];
+  r[a.sellerName].push(a);
+  return r;
+ }, {});
+
+ Object.keys(prod).forEach(function(prop){ console.table(prod[prop])});
+ Object.keys(prod).forEach(function(prop){ console.table(prod[prop][0])});
+ Object.keys(prod).forEach(function(prop){ console.table(prod[prop][0].bookingData)});
+ Object.keys(prod).forEach(function(prop){ console.table(prod[prop][1].bookingData)});
+
+ Object.keys(prod).forEach(function(prop){
+  prod[prop][0].bookingData.map(function(d){
+    console.log(d.startDate, d.endDate, d.quantity, d.productId)
+  })});
+  Object.keys(prod).forEach(function(prop){
+    console.log(prod[prop][0].bookingData.length) });
+
+  Object.keys(prod).forEach(function(prop){
+      console.log(prod[prop].length) });
+
+
+
+      //Converting JSON object to JS object
+    var obj = JSON.parse(prod);
+    
+     // Define recursive function to print nested values
+     function printValues(obj) {
+      for(var k in obj) {
+          if(obj[k] instanceof Object) {
+              printValues(obj[k]);
+          } else {
+            document.write(obj["startDate"] + obj["endDate"] + obj["quantity"] + obj["name"] + obj["productId"] + "<br>");
+          };
+      }
+  };
+  
+  // Printing all the values from the resulting object
+  printValues(prod);
+  
+  document.write("<hr>");
+
+    // Define recursive function to print nested values
+    function printValues(obj) {
+      for(var k in obj) {
+          if(obj[k] instanceof Array) {
+              printValues(obj[k]);
+          } else {
+              document.write(obj[k]["id"] + obj[k]["name"] + obj[k]["rate"] + obj[k]["sellerId"] + obj[k]["sellerName"] + "<br>");
+          };
+      }
+  };
+  
+  // Printing all the values from the resulting object
+  printValues(prod);
+  
+  document.write("<hr>");
+
+
+
+
+
+
+
+
+
+
+
+// https://stackoverflow.com/questions/6571551/shorthand-function-for-checking-whether-a-property-exists
+const assert = {
+  isTrue: (arg1, msg = '') =>
+      (arg1 === true) ? console.info('PASSED: '+msg) : console.error('FAILED: ' + msg),
+  isFalse: (arg1, msg = '') =>
+      (arg1 === false) ? console.info('PASSED: '+msg) : console.error('FAILED: ' + msg)
+}
+
+const data = {
+  flat: 42,
+  nest: {
+      foo: "foo one",
+      bar: {
+          can: "can one"
+      }
+  },
+  arr : [ "joe" ],
+  arr2: [ {magic: 'mike'}]
+}
+
+const propExists = (obj, path) => {
+  return !!path.split(".").reduce((obj, prop) => {
+      return obj && obj[prop] ? obj[prop] : undefined;
+  }, obj)
+}
+
+assert.isTrue(propExists(data, "flat"),'simple test');
+assert.isTrue(propExists(data, "nest.foo"),'2nd degree');
+assert.isTrue(propExists(data, "nest.bar"),'obj');
+assert.isTrue(propExists(data, "nest.bar.can"),'3rd degree');
+assert.isTrue(propExists(data, "arr.0"),'array in obj');
+assert.isTrue(propExists(data, "arr2.0.magic"), 'prop in object in array')
+
+assert.isFalse(propExists(data, "xyz"), 'not there first sight');
+assert.isFalse(propExists(data, "flat2.nosub"),'not there child');
+assert.isFalse(propExists(data, "nest.foo.elvis"),'partially there');
+assert.isFalse(propExists(data, "nest.bar.can.nope"),'tip of the leave');
+assert.isFalse(propExists(data, "arr.1"),'wrong array index');
